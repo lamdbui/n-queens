@@ -180,13 +180,41 @@
     // --------------------------------------------------------------
     //
     // test if a specific minor diagonal on this board contains a conflict
-    hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+    hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndex, row = 0) {
+      var board = this.rows();
+      var minorDiagonalOffset = this._getFirstRowColumnIndexForMinorDiagonalOn(row, minorDiagonalColumnIndex);
+      var count = 0;
+      
+      for (var i = 0; i < board.length; i++) {
+        for (var j = minorDiagonalColumnIndex; j >= 0; j--) {
+          if (board[i][j] === 1 && this._getFirstRowColumnIndexForMinorDiagonalOn(i, j) === minorDiagonalOffset) {
+            count++;
+            if (count > 1) {
+              return true;
+            }
+          }
+        }
+      }
+      return false;
     },
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
-      return false; // fixme
+      var board = this.rows();
+      var numCols = this.get('n');
+      for (var i = 0; i < numCols; i++) {
+        if (this.hasMinorDiagonalConflictAt(i)) {
+          return true;
+        }
+      }
+
+      for (var r = 1; r < board.length; r++) {
+        if (this.hasMinorDiagonalConflictAt(numCols - 1, r)) {
+          return true;
+        }
+      }
+
+      return false;
     }
 
     /*--------------------  End of Helper Functions  ---------------------*/
