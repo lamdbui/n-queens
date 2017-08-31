@@ -56,6 +56,11 @@ window.findNRooksSolution = function(n) {
 window.countNRooksSolutions = function(n) {
   var solution = new Board({'n': n});
   var solutionCount = 0;
+  
+  var validRows = Array(n);
+  var validCols = Array(n);
+  validRows.fill(true);
+  validCols.fill(true);
 
   var addPiece = function(count) {
     var row = count;
@@ -66,17 +71,29 @@ window.countNRooksSolutions = function(n) {
     }
 
     for (var col = 0; col < n; col++) {
-      solution.togglePiece(row, col);
-      count++;
+      if (validRows[row] && validCols[col]) {
+        solution.togglePiece(row, col);
+        count++;
 
-      if (!solution.hasAnyRooksConflicts(row, col)) {
-        // recursively call on next pieces
-        addPiece(count);
-      }
-      // untoggle on failure
-      solution.togglePiece(row, col);
-      count--;
-    }    
+        // mark off unavailable rows/cols
+        validRows[row] = false;
+        validCols[col] = false;
+
+        //if (!solution.hasAnyRooksConflictsOn(row, col)) {
+        if (!solution.hasColConflictAt(col) && !solution.hasRowConflictAt(row)) {
+          // recursively call on next pieces
+          addPiece(count);
+        }
+
+        // mark off unavailable rows/cols
+        validRows[row] = true;
+        validCols[col] = true;
+
+        // untoggle on failure
+        solution.togglePiece(row, col);
+        count--;
+      }    
+    }
   };
 
   addPiece(0);
@@ -106,6 +123,7 @@ window.findNQueensSolution = function(n) {
           return true;
         }
       }
+
       // untoggle on failure
       solution.togglePiece(row, col);
       count--;
