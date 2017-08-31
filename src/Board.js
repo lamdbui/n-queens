@@ -51,7 +51,11 @@
     },
 
     hasAnyQueensConflicts: function() {
-      return this.hasAnyRooksConflicts() || this.hasAnyMajorDiagonalConflicts() || this.hasAnyMinorDiagonalConflicts();
+      var rooks = this.hasAnyRooksConflicts();
+      var majors = this.hasAnyMajorDiagonalConflicts();
+      var minors = this.hasAnyMinorDiagonalConflicts();
+      return rooks || majors || minors;
+      //return this.hasAnyRooksConflicts() || this.hasAnyMajorDiagonalConflicts() || this.hasAnyMinorDiagonalConflicts();
     },
 
     _isInBounds: function(rowIndex, colIndex) {
