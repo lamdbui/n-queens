@@ -79,7 +79,7 @@ window.countNRooksSolutions = function(n) {
     }    
   };
 
-  //addPiece(0);
+  addPiece(0);
 
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
@@ -120,8 +120,10 @@ window.findNQueensSolution = function(n) {
 
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
 window.countNQueensSolutions = function(n) {
-  var validRows = _.range(n);
-  var validCols = _.range(n);
+  var validRows = Array(n);
+  var validCols = Array(n);
+  validRows.fill(true);
+  validCols.fill(true);
  
   var solution = new Board({'n': n});
   var solutionCount = 0;
@@ -134,58 +136,25 @@ window.countNQueensSolutions = function(n) {
       return;
     }
 
-    for (var col = 0; col < validCols.length; col++) {
-      solution.togglePiece(row, validCols[col]);
-      count++;
-      // var poppedRow = validRows.splice(validRows.indexOf(row), 1);
-      // var poppedCol = validCols.splice(validCols.indexOf(validCols[col]), 1);
-      var poppedRowIndex = validRows.indexOf(row);
-      var poppedColIndex = validCols.indexOf(validCols[col]);
-      var poppedRow = undefined;
-      var poppedCol = undefined;
+    for (var col = 0; col < n; col++) {
+      if (validRows[row] && validCols[col]) {
+        solution.togglePiece(row, col);
+        count++;
 
-      var currRow = row;
-      var currCol = validCols[col];
+        // mark off unavailable rows/cols
+        validRows[row] = false;
+        validCols[col] = false;
 
-      if (poppedRowIndex !== -1) {
-        poppedRow = validRows[validRows.indexOf(row)];
-        validRows.splice(validRows.indexOf(row), 1);
-      }
-      if (poppedColIndex !== -1) {
-        poppedCol = validCols[validCols.indexOf(validCols[col])];
-        validCols.splice(validCols.indexOf(validCols[col]), 1);
-      }
-      
-      // var poppedRow = validRows[validRows.indexOf(row)];
-      // validRows.splice(validRows.indexOf(row), 1);
-      // var poppedCol = validCols[validCols.indexOf(validCols[col])];
-      // validCols.splice(validCols.indexOf(validCols[col]), 1);
+        //if (!solution.hasAnyQueensConflicts()) {
+        if (!solution.hasAnyQueenConflictsOn(row, col)) {
+          addPiece(count);
+        }
+        
+        solution.togglePiece(row, col);
+        count--;
 
-      // if (!solution.hasRowConflictAt(poppedRow) && 
-      //     !solution.hasColConflictAt(poppedCol) &&
-      //     !solution.hasMajorDiagonalConflictAt(poppedCol, poppedRow) && 
-      //     !solution.hasMinorDiagonalConflictAt(poppedCol, poppedRow)) {
-      //   addPiece(count);
-      // }
-    
-
-      // if (!solution.hasAnyQueenConflictsOn(currRow, currCol)) {
-      //   addPiece(count);
-      // }
-      if (!solution.hasAnyQueensConflicts()) {
-        addPiece(count);
-      }
-      
-      solution.togglePiece(currRow, currCol);
-      count--;
-
-      if (poppedRow) {
-        //validRows.unshift(poppedRow);
-        validRows.splice(poppedRowIndex, 0, poppedRow);
-      }
-      if (poppedCol) {
-        //validCols.unshift(poppedCol);
-        validCols.splice(poppedColIndex, 0, poppedCol);
+        validRows[row] = true;
+        validCols[col] = true;
       }
     }
   };
