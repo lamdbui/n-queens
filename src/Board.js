@@ -85,8 +85,9 @@
     hasRowConflictAt: function(rowIndex) {
       var row = this.get(rowIndex);
       var count = 0;
+
       for (var i = 0; i < row.length; i++) {
-        if (row[i] === 1) {
+        if (row[i]) {
           count++;
         }
       }

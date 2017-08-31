@@ -29,8 +29,8 @@ window.findNRooksSolution = function(n) {
       return true;
     }
 
-    for (var col = 0; col < validCols.length; col++) {
-      solution.togglePiece(row, validCols[col]);
+    for (let col of validCols) {
+      solution.togglePiece(row, col);
       
       count++;
 
