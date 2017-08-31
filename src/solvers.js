@@ -16,16 +16,43 @@
 
 
 window.findNRooksSolution = function(n) {
-  var solution = new Board({'n': n});
+  // var solution = new Board({'n': n});
   
-  for (var r = 0; r < n; r++) {
-    for (var c = 0; c < n; c++) {
-      solution.togglePiece(r, c);
-      if (solution.hasAnyRooksConflicts()) {
-        solution.togglePiece(r, c);
-      }
+  // for (var r = 0; r < n; r++) {
+  //   for (var c = 0; c < n; c++) {
+  //     solution.togglePiece(r, c);
+  //     if (solution.hasAnyRooksConflicts()) {
+  //       solution.togglePiece(r, c);
+  //     }
+  //   }
+  // }
+
+  var solution = new Board({'n': n});
+
+  var addPiece = function(count) {
+    var row = count;
+
+    if (count === n) {
+      return true;
     }
-  }
+
+    for (var col = 0; col < n; col++) {
+      solution.togglePiece(row, col);
+      count++;
+
+      if (!solution.hasAnyRooksConflicts(row, col)) {
+        // recursively call on next pieces
+        if (addPiece(count)) {
+          return true;
+        }
+      }
+      // untoggle on failure
+      solution.togglePiece(row, col);
+      count--;
+    }    
+  };
+
+  addPiece(0);
 
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution.rows()));
   return solution.rows();
